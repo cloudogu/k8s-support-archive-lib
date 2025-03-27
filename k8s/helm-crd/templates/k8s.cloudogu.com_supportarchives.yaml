@@ -43,12 +43,54 @@ spec:
             spec:
               description: SupportArchiveSpec defines the desired state of SupportArchive.
               properties:
-                foo:
-                  description: Foo is an example field of SupportArchive. Edit supportarchive_types.go to remove/update
-                  type: string
+                excludedContents:
+                  description: ExcludedContents defines which contents should not be included in the SupportArchive.
+                  properties:
+                    logs:
+                      description: LogsAndEvents concerns application logs and Kubernetes events.
+                      type: boolean
+                    sensitiveData:
+                      description: |-
+                        SensitiveData concerns Secrets with label `app: ces`.
+                        They will be censored even if included.
+                      type: boolean
+                    systemInfo:
+                      description: SystemInfo concerns information about the system like the kubernetes version and nodes.
+                      type: boolean
+                    systemState:
+                      description: 'SystemState concerns all Kubernetes resources (excluding Secrets) with label `app: ces`.'
+                      type: boolean
+                    volumeInfo:
+                      description: VolumeInfo concerns metrics about volumes.
+                      type: boolean
+                  type: object
+                loggingConfig:
+                  description: LoggingConfig defines how logs should be collected.
+                  properties:
+                    endTime:
+                      description: EndTime is the maximal time from when logs and events should be included.
+                      format: date-time
+                      type: string
+                    startTime:
+                      description: StartTime is the minimal time from when logs and events should be included.
+                      format: date-time
+                      type: string
+                  type: object
               type: object
             status:
               description: SupportArchiveStatus defines the observed state of SupportArchive.
+              properties:
+                downloadUrl:
+                  description: DownloadPath exposes where the created archive can be obtained.
+                  type: string
+                errors:
+                  description: Errors contains error messages that accumulated during execution.
+                  items:
+                    type: string
+                  type: array
+                phase:
+                  description: Phase defines the current general state the resource is in.
+                  type: string
               type: object
           type: object
       served: true
