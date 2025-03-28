@@ -56,6 +56,9 @@ type SupportArchiveStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-support-archive-operator;k8s.cloudogu.com/component.name=k8s-support-archive-operator-crd
+// +kubebuilder:resource:shortName="sar"
+// +kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase",description="The current phase of the support archive"
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
 
 // SupportArchive is the Schema for the supportarchives API.
 type SupportArchive struct {

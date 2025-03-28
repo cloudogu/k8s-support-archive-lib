@@ -15,10 +15,21 @@ spec:
     kind: SupportArchive
     listKind: SupportArchiveList
     plural: supportarchives
+    shortNames:
+      - sar
     singular: supportarchive
   scope: Namespaced
   versions:
-    - name: v1
+    - additionalPrinterColumns:
+        - description: The current phase of the support archive
+          jsonPath: .status.phase
+          name: Phase
+          type: string
+        - description: The age of the resource
+          jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+      name: v1
       schema:
         openAPIV3Schema:
           description: SupportArchive is the Schema for the supportarchives API.
