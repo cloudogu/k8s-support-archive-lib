@@ -36,6 +36,30 @@ node('docker') {
             make 'clean'
         }
 
+        new Docker(this)
+                .image("golang:${goVersion}")
+                .mountJenkinsUser()
+                .inside("--volume ${WORKSPACE}:/go/src/${project} -w /go/src/${project}")
+                        {
+                            stage("Unit test") {
+                                make 'unit-test'
+                                junit allowEmptyResults: true, testResults: 'target/unit-tests/*-tests.xml'
+                            }
+
+                            stage("Review dog analysis") {
+                                stageStaticAnalysisReviewDog()
+                            }
+
+                            stage('Generate k8s Resources') {
+                                make 'crd-helm-generate'
+                                archiveArtifacts "${helmTargetDir}/**/*"
+                            }
+
+                            stage("Lint helm") {
+                                make 'crd-helm-lint'
+                            }
+                        }
+
         stage('SonarQube') {
             stageStaticAnalysisSonarQube()
         }
