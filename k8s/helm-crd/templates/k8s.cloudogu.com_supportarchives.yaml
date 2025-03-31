@@ -91,7 +91,7 @@ spec:
             status:
               description: SupportArchiveStatus defines the observed state of SupportArchive.
               properties:
-                downloadUrl:
+                downloadPath:
                   description: DownloadPath exposes where the created archive can be obtained.
                   type: string
                 errors:

@@ -50,7 +50,7 @@ type SupportArchiveStatus struct {
 	// Errors contains error messages that accumulated during execution.
 	Errors []string `json:"errors,omitempty"`
 	// DownloadPath exposes where the created archive can be obtained.
-	DownloadPath string `json:"downloadUrl,omitempty"`
+	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
 // +kubebuilder:object:root=true
