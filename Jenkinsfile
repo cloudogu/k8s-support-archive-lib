@@ -137,7 +137,7 @@ void stageAutomaticRelease(Makefile makefile) {
                                 withCredentials([usernamePassword(credentialsId: 'harborhelmchartpush', usernameVariable: 'HARBOR_USERNAME', passwordVariable: 'HARBOR_PASSWORD')]) {
                                     sh ".bin/helm registry login ${registry} --username '${HARBOR_USERNAME}' --password '${HARBOR_PASSWORD}'"
 
-                                    sh ".bin/helm push ${helmCRDChartDir}/${repositoryName}-crd-${controllerVersion}.tgz oci://${registry}/${registry_namespace}/"
+                                    sh ".bin/helm push ${helmCRDChartDir}/k8s-support-archive-operator-crd-${controllerVersion}.tgz oci://${registry}/${registry_namespace}/"
                                 }
                             }
         }
