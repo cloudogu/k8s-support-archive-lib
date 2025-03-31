@@ -123,10 +123,6 @@ void stageAutomaticRelease(Makefile makefile) {
         String controllerVersion = makefile.getVersion()
         String releaseVersion = "v${controllerVersion}".toString()
 
-        stage('Sign after Release') {
-            gpg.createSignature()
-        }
-
         stage('Push Helm chart to Harbor') {
             new Docker(this)
                     .image("golang:${goVersion}")
