@@ -1,6 +1,6 @@
 ARTIFACT_ID=k8s-support-archive-operator-crd
 APPEND_CRD_SUFFIX=false
-VERSION=0.1.0
+VERSION=0.1.1
 ## Image URL to use all building/pushing image targets
 IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
 GOTAG?=1.24.1
