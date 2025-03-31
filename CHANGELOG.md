@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.2] - 2025-03-31
+### Changed
+- Renamed `downloadUrl` to `downloadPath` for consistency.
+
 ## [v0.1.1] - 2025-03-31
 ### Added
 - [#1] CustomResourceDefinition for SupportArchives
