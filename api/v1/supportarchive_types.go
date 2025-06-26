@@ -12,6 +12,8 @@ const (
 	StatusPhaseCreated  StatusPhase = "Created"
 	StatusPhaseDeleting StatusPhase = "Deleting"
 	StatusPhaseFailed   StatusPhase = "Failed"
+
+	ConditionSupportArchiveCreated = "Created"
 )
 
 // SupportArchiveSpec defines the desired state of SupportArchive.
@@ -51,6 +53,13 @@ type SupportArchiveStatus struct {
 	Errors []string `json:"errors,omitempty"`
 	// DownloadPath exposes where the created archive can be obtained.
 	DownloadPath string `json:"downloadPath,omitempty"`
+	// Conditions exposes the actual progress of the support archive creation.
+	// +listType=map
+	// +listMapKey=type
+	// +patchStrategy=merge
+	// +patchMergeKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true
