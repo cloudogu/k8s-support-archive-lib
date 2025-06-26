@@ -6,7 +6,7 @@ metadata:
     controller-gen.kubebuilder.io/version: v0.14.0
   labels:
     app: ces
-    app.kubernetes.io/name: k8s-support-archive-operator-crd
+    app.kubernetes.io/name: k8s-support-archive-lib
     k8s.cloudogu.com/component.name: k8s-support-archive-operator-crd
   name: supportarchives.k8s.cloudogu.com
 spec:
