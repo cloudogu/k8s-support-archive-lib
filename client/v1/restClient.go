@@ -23,25 +23,25 @@ type supportArchiveClient struct {
 
 // UpdateStatusCreating sets the status of the supportArchive to "creating".
 func (client *supportArchiveClient) UpdateStatusCreating(ctx context.Context, supportArchive *v1.SupportArchive) (*v1.SupportArchive, error) {
-	return client.updateStatusWithRetry(ctx, supportArchive, v1.StatusPhaseCreating)
+	return client.updateStatusPhaseWithRetry(ctx, supportArchive, v1.StatusPhaseCreating)
 }
 
 // UpdateStatusCreated sets the status of the supportArchive to "created".
 func (client *supportArchiveClient) UpdateStatusCreated(ctx context.Context, supportArchive *v1.SupportArchive) (*v1.SupportArchive, error) {
-	return client.updateStatusWithRetry(ctx, supportArchive, v1.StatusPhaseCreated)
+	return client.updateStatusPhaseWithRetry(ctx, supportArchive, v1.StatusPhaseCreated)
 }
 
 // UpdateStatusDeleting sets the status of the supportArchive to "deleting".
 func (client *supportArchiveClient) UpdateStatusDeleting(ctx context.Context, supportArchive *v1.SupportArchive) (*v1.SupportArchive, error) {
-	return client.updateStatusWithRetry(ctx, supportArchive, v1.StatusPhaseDeleting)
+	return client.updateStatusPhaseWithRetry(ctx, supportArchive, v1.StatusPhaseDeleting)
 }
 
 // UpdateStatusFailed sets the status of the supportArchive to "failed".
 func (client *supportArchiveClient) UpdateStatusFailed(ctx context.Context, supportArchive *v1.SupportArchive) (*v1.SupportArchive, error) {
-	return client.updateStatusWithRetry(ctx, supportArchive, v1.StatusPhaseFailed)
+	return client.updateStatusPhaseWithRetry(ctx, supportArchive, v1.StatusPhaseFailed)
 }
 
-func (client *supportArchiveClient) updateStatusWithRetry(ctx context.Context, supportArchive *v1.SupportArchive, targetStatus v1.StatusPhase) (*v1.SupportArchive, error) {
+func (client *supportArchiveClient) updateStatusPhaseWithRetry(ctx context.Context, supportArchive *v1.SupportArchive, targetStatus v1.StatusPhase) (*v1.SupportArchive, error) {
 	var resultSupportArchive *v1.SupportArchive
 	err := retry.OnConflict(func() error {
 		updatedSupportArchive, err := client.Get(ctx, supportArchive.GetName(), metav1.GetOptions{})
@@ -57,6 +57,33 @@ func (client *supportArchiveClient) updateStatusWithRetry(ctx context.Context, s
 	})
 
 	return resultSupportArchive, err
+}
+
+// UpdateStatusWithRetry updates the status of the resource, retrying if a conflict error arises.
+func (client *supportArchiveClient) UpdateStatusWithRetry(ctx context.Context, cr *v1.SupportArchive, modifyStatusFn func(v1.SupportArchiveStatus) v1.SupportArchiveStatus, opts metav1.UpdateOptions) (result *v1.SupportArchive, err error) {
+	firstTry := true
+
+	var currentObj *v1.SupportArchive
+	err = retry.OnConflict(func() error {
+		if firstTry {
+			firstTry = false
+			currentObj = cr.DeepCopy()
+		} else {
+			currentObj, err = client.Get(ctx, cr.Name, metav1.GetOptions{})
+			if err != nil {
+				return err
+			}
+		}
+
+		currentObj.Status = modifyStatusFn(currentObj.Status)
+		currentObj, err = client.UpdateStatus(ctx, currentObj, opts)
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return currentObj, nil
 }
 
 // AddFinalizer adds the given finalizer to the supportArchive.

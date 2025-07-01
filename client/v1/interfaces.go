@@ -21,6 +21,8 @@ type SupportArchiveInterface interface {
 	Update(ctx context.Context, supportArchive *v1.SupportArchive, opts metav1.UpdateOptions) (*v1.SupportArchive, error)
 	// UpdateStatus was generated because the type contains a Status member.
 	UpdateStatus(ctx context.Context, supportArchive *v1.SupportArchive, opts metav1.UpdateOptions) (*v1.SupportArchive, error)
+	// UpdateStatusWithRetry updates the status according to modifyStatusFn and if a conflict error occurs, the method will refetch the resource and retry the status update.
+	UpdateStatusWithRetry(ctx context.Context, cr *v1.SupportArchive, modifyStatusFn func(v1.SupportArchiveStatus) v1.SupportArchiveStatus, opts metav1.UpdateOptions) (*v1.SupportArchive, error)
 	// UpdateStatusCreating sets the status of the supportArchive to "creating".
 	UpdateStatusCreating(ctx context.Context, supportArchive *v1.SupportArchive) (*v1.SupportArchive, error)
 	// UpdateStatusCreated sets the status of the supportArchive to "created".
