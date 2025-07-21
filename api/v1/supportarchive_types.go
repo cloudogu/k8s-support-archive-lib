@@ -30,8 +30,10 @@ type ExcludedContents struct {
 	// SensitiveData concerns Secrets with label `app: ces`.
 	// They will be censored even if included.
 	SensitiveData bool `json:"sensitiveData,omitempty"`
-	// LogsAndEvents concerns application logs and Kubernetes events.
-	LogsAndEvents bool `json:"logs,omitempty"`
+	// Events concerns Kubernetes events.
+	Events bool `json:"events,omitempty"`
+	// LogsAndEvents concerns application logs.
+	Logs bool `json:"logs,omitempty"`
 	// VolumeInfo concerns metrics about volumes.
 	VolumeInfo bool `json:"volumeInfo,omitempty"`
 	// SystemInfo concerns information about the system like the kubernetes version and nodes.
