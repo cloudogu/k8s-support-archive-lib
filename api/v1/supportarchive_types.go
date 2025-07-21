@@ -7,12 +7,6 @@ import (
 type StatusPhase string
 
 const (
-	StatusPhaseNew      StatusPhase = ""
-	StatusPhaseCreating StatusPhase = "Creating"
-	StatusPhaseCreated  StatusPhase = "Created"
-	StatusPhaseDeleting StatusPhase = "Deleting"
-	StatusPhaseFailed   StatusPhase = "Failed"
-
 	ConditionSupportArchiveCreated = "Created"
 )
 
@@ -49,8 +43,6 @@ type LoggingConfig struct {
 
 // SupportArchiveStatus defines the observed state of SupportArchive.
 type SupportArchiveStatus struct {
-	// Phase defines the current general state the resource is in.
-	Phase StatusPhase `json:"phase,omitempty"`
 	// Errors contains error messages that accumulated during execution.
 	Errors []string `json:"errors,omitempty"`
 	// DownloadPath exposes where the created archive can be obtained.
@@ -68,7 +60,6 @@ type SupportArchiveStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-support-archive-operator;k8s.cloudogu.com/component.name=k8s-support-archive-operator-crd
 // +kubebuilder:resource:shortName="sar"
-// +kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase",description="The current phase of the support archive"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
 
 // SupportArchive is the Schema for the supportarchives API.

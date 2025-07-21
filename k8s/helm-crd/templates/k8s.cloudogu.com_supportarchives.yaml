@@ -21,10 +21,6 @@ spec:
   scope: Namespaced
   versions:
     - additionalPrinterColumns:
-        - description: The current phase of the support archive
-          jsonPath: .status.phase
-          name: Phase
-          type: string
         - description: The age of the resource
           jsonPath: .metadata.creationTimestamp
           name: Age
@@ -166,9 +162,6 @@ spec:
                   items:
                     type: string
                   type: array
-                phase:
-                  description: Phase defines the current general state the resource is in.
-                  type: string
               type: object
           type: object
       served: true
