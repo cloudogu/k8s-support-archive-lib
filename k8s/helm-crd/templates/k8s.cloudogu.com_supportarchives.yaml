@@ -57,7 +57,7 @@ spec:
                       description: Events concerns Kubernetes events.
                       type: boolean
                     logs:
-                      description: LogsAndEvents concerns application logs.
+                      description: Logs concerns application logs.
                       type: boolean
                     sensitiveData:
                       description: |-

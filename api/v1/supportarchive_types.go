@@ -26,7 +26,7 @@ type ExcludedContents struct {
 	SensitiveData bool `json:"sensitiveData,omitempty"`
 	// Events concerns Kubernetes events.
 	Events bool `json:"events,omitempty"`
-	// LogsAndEvents concerns application logs.
+	// Logs concerns application logs.
 	Logs bool `json:"logs,omitempty"`
 	// VolumeInfo concerns metrics about volumes.
 	VolumeInfo bool `json:"volumeInfo,omitempty"`
