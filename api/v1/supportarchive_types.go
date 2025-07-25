@@ -13,32 +13,42 @@ const (
 // SupportArchiveSpec defines the desired state of SupportArchive.
 type SupportArchiveSpec struct {
 	// ExcludedContents defines which contents should not be included in the SupportArchive.
-	ExcludedContents ExcludedContents `json:"excludedContents,omitempty"`
-	// LoggingConfig defines how logs should be collected.
-	LoggingConfig LoggingConfig `json:"loggingConfig,omitempty"`
+	// +required
+	ExcludedContents ExcludedContents `json:"excludedContents"`
+	// ContentTimeframe defines the timeframe of the contents in the supportArchive.
+	// +required
+	ContentTimeframe ContentTimeframe `json:"contentTimeframe"`
 }
 
 type ExcludedContents struct {
 	// SystemState concerns all Kubernetes resources (excluding Secrets) with label `app: ces`.
-	SystemState bool `json:"systemState,omitempty"`
+	// +required
+	SystemState bool `json:"systemState"`
 	// SensitiveData concerns Secrets with label `app: ces`.
 	// They will be censored even if included.
-	SensitiveData bool `json:"sensitiveData,omitempty"`
+	// +required
+	SensitiveData bool `json:"sensitiveData"`
 	// Events concerns Kubernetes events.
-	Events bool `json:"events,omitempty"`
+	// +required
+	Events bool `json:"events"`
 	// Logs concerns application logs.
-	Logs bool `json:"logs,omitempty"`
+	// +required
+	Logs bool `json:"logs"`
 	// VolumeInfo concerns metrics about volumes.
-	VolumeInfo bool `json:"volumeInfo,omitempty"`
+	// +required
+	VolumeInfo bool `json:"volumeInfo"`
 	// SystemInfo concerns information about the system like the kubernetes version and nodes.
-	SystemInfo bool `json:"systemInfo,omitempty"`
+	// +required
+	SystemInfo bool `json:"systemInfo"`
 }
 
-type LoggingConfig struct {
+type ContentTimeframe struct {
 	// StartTime is the minimal time from when logs and events should be included.
-	StartTime metav1.Time `json:"startTime,omitempty"`
+	// +required
+	StartTime metav1.Time `json:"startTime"`
 	// EndTime is the maximal time from when logs and events should be included.
-	EndTime metav1.Time `json:"endTime,omitempty"`
+	// +required
+	EndTime metav1.Time `json:"endTime"`
 }
 
 // SupportArchiveStatus defines the observed state of SupportArchive.

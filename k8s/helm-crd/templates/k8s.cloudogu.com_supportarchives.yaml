@@ -50,6 +50,21 @@ spec:
             spec:
               description: SupportArchiveSpec defines the desired state of SupportArchive.
               properties:
+                contentTimeframe:
+                  description: ContentTimeframe defines the timeframe of the contents in the supportArchive.
+                  properties:
+                    endTime:
+                      description: EndTime is the maximal time from when logs and events should be included.
+                      format: date-time
+                      type: string
+                    startTime:
+                      description: StartTime is the minimal time from when logs and events should be included.
+                      format: date-time
+                      type: string
+                  required:
+                    - endTime
+                    - startTime
+                  type: object
                 excludedContents:
                   description: ExcludedContents defines which contents should not be included in the SupportArchive.
                   properties:
@@ -73,19 +88,17 @@ spec:
                     volumeInfo:
                       description: VolumeInfo concerns metrics about volumes.
                       type: boolean
+                  required:
+                    - events
+                    - logs
+                    - sensitiveData
+                    - systemInfo
+                    - systemState
+                    - volumeInfo
                   type: object
-                loggingConfig:
-                  description: LoggingConfig defines how logs should be collected.
-                  properties:
-                    endTime:
-                      description: EndTime is the maximal time from when logs and events should be included.
-                      format: date-time
-                      type: string
-                    startTime:
-                      description: StartTime is the minimal time from when logs and events should be included.
-                      format: date-time
-                      type: string
-                  type: object
+              required:
+                - contentTimeframe
+                - excludedContents
               type: object
             status:
               description: SupportArchiveStatus defines the observed state of SupportArchive.
