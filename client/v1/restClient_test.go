@@ -3,10 +3,13 @@ package v1
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
+	"k8s.io/apimachinery/pkg/api/meta"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -467,5 +470,49 @@ func Test_supportArchiveClient_RemoveFinalizer(t *testing.T) {
 		// then
 		require.Error(t, err)
 		assert.ErrorContains(t, err, "failed to remove finalizer finalizer2 from supportArchive")
+	})
+}
+
+func Test_supportArchiveClient_UpdateStatusWithRetry(t *testing.T) {
+
+	t.Run("success", func(t *testing.T) {
+		// given
+		downloadURL := "url"
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		modifyFunc := func(status v1.SupportArchiveStatus) v1.SupportArchiveStatus {
+			meta.SetStatusCondition(&status.Conditions, metav1.Condition{
+				Type:               v1.ConditionSupportArchiveCreated,
+				Status:             metav1.ConditionTrue,
+				LastTransitionTime: metav1.Time{Time: time.Now()},
+				Reason:             "AllCollectorsExecuted",
+				Message:            fmt.Sprintf("It is available for download under following url: %s", downloadURL),
+			})
+			status.DownloadPath = downloadURL
+			return status
+		}
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			assert.Equal(t, "PUT", request.Method)
+			assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive/status", request.URL.Path)
+
+			result, err := json.Marshal(v1.SupportArchiveStatus{})
+			require.NoError(t, err)
+
+			writer.Header().Add("content-type", "application/json")
+			_, err = writer.Write(result)
+			require.NoError(t, err)
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = sClient.UpdateStatusWithRetry(testCtx, supportArchive, modifyFunc, metav1.UpdateOptions{})
+
+		// then
+		require.NoError(t, err)
 	})
 }
