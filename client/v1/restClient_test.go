@@ -558,3 +558,91 @@ func Test_supportArchiveClient_UpdateStatusWithRetry(t *testing.T) {
 		assert.ErrorContains(t, err, "an error on the server (\"{}\") has prevented the request from succeeding")
 	})
 }
+
+func Test_supportArchiveClient_isFirstTry(t *testing.T) {
+	t.Run("should succeed and return copy on firstTry", func(t *testing.T) {
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		firstTry := true
+
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = isFirstTry(testCtx, sClient, supportArchive, &firstTry)
+
+		// then
+		require.NoError(t, err)
+		assert.False(t, firstTry)
+	})
+	t.Run("should succeed and return archive after firstTry", func(t *testing.T) {
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		firstTry := false
+
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			assert.Equal(t, "GET", request.Method)
+			assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive", request.URL.Path)
+			assert.Equal(t, http.NoBody, request.Body)
+
+			writer.Header().Add("content-type", "application/json")
+			supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "testsupportArchive", Namespace: "test"}}
+			supportArchiveBytes, err := json.Marshal(supportArchive)
+			require.NoError(t, err)
+			_, err = writer.Write(supportArchiveBytes)
+			require.NoError(t, err)
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = isFirstTry(testCtx, sClient, supportArchive, &firstTry)
+
+		// then
+		require.NoError(t, err)
+		assert.False(t, firstTry)
+	})
+	t.Run("should fail to get support archive", func(t *testing.T) {
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		firstTry := false
+
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			assert.Equal(t, "GET", request.Method)
+			assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive", request.URL.Path)
+
+			supportArchiveBytes, err := json.Marshal(&v1.SupportArchive{})
+			require.NoError(t, err)
+
+			writer.WriteHeader(500)
+			writer.Header().Add("content-type", "application/json")
+			_, err = writer.Write(supportArchiveBytes)
+			require.NoError(t, err)
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = isFirstTry(testCtx, sClient, supportArchive, &firstTry)
+
+		// then
+		require.Error(t, err)
+		assert.ErrorContains(t, err, "an error on the server (\"{\\\"metadata\\\":{\\\"creationTimestamp\\\":null},\\\"spec\\\":{\\\"excludedContents\\\":{\\\"systemState\\\":false,\\\"sensitiveData\\\":false,\\\"events\\\":false,\\\"logs\\\":false,\\\"volumeInfo\\\":false,\\\"systemInfo\\\":false},\\\"contentTimeframe\\\":{\\\"startTime\\\":null,\\\"endTime\\\":null}},\\\"status\\\":{}}\") has prevented the request from succeeding")
+		assert.False(t, firstTry)
+	})
+}
