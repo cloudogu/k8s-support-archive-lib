@@ -80,7 +80,8 @@ type SupportArchive struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   SupportArchiveSpec   `json:"spec,omitempty"`
+	// +required
+	Spec   SupportArchiveSpec   `json:"spec"`
 	Status SupportArchiveStatus `json:"status,omitempty"`
 }
 
