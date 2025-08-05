@@ -106,11 +106,6 @@ spec:
                 - contentTimeframe
                 - excludedContents
               type: object
-              x-kubernetes-validations:
-                - message: ExcludedContents is required once set
-                  rule: '!has(oldSelf.excludedContents) || has(self.excludedContents)'
-                - message: ContentTimeframe is required once set
-                  rule: '!has(oldSelf.contentTimeframe) || has(self.contentTimeframe)'
             status:
               description: SupportArchiveStatus defines the observed state of SupportArchive.
               properties:

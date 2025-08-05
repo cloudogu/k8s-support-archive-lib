@@ -12,8 +12,6 @@ const (
 )
 
 // SupportArchiveSpec defines the desired state of SupportArchive.
-// +kubebuilder:validation:XValidation:rule="!has(oldSelf.excludedContents) || has(self.excludedContents)", message="ExcludedContents is required once set"
-// +kubebuilder:validation:XValidation:rule="!has(oldSelf.contentTimeframe) || has(self.contentTimeframe)", message="ContentTimeframe is required once set"
 type SupportArchiveSpec struct {
 	// ExcludedContents defines which contents should not be included in the SupportArchive.
 	// +required
