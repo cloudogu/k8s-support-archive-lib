@@ -65,6 +65,9 @@ spec:
                     - endTime
                     - startTime
                   type: object
+                  x-kubernetes-validations:
+                    - message: ContentTimeframe is immutable
+                      rule: self == oldSelf
                 excludedContents:
                   description: ExcludedContents defines which contents should not be included in the SupportArchive.
                   properties:
@@ -96,10 +99,18 @@ spec:
                     - systemState
                     - volumeInfo
                   type: object
+                  x-kubernetes-validations:
+                    - message: ExcludedContents is immutable
+                      rule: self == oldSelf
               required:
                 - contentTimeframe
                 - excludedContents
               type: object
+              x-kubernetes-validations:
+                - message: ExcludedContents is required once set
+                  rule: '!has(oldSelf.excludedContents) || has(self.excludedContents)'
+                - message: ContentTimeframe is required once set
+                  rule: '!has(oldSelf.contentTimeframe) || has(self.contentTimeframe)'
             status:
               description: SupportArchiveStatus defines the observed state of SupportArchive.
               properties:
