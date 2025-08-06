@@ -15,9 +15,11 @@ const (
 type SupportArchiveSpec struct {
 	// ExcludedContents defines which contents should not be included in the SupportArchive.
 	// +required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="ExcludedContents is immutable"
 	ExcludedContents ExcludedContents `json:"excludedContents"`
 	// ContentTimeframe defines the timeframe of the contents in the supportArchive.
 	// +required
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="ContentTimeframe is immutable"
 	ContentTimeframe ContentTimeframe `json:"contentTimeframe"`
 }
 
@@ -78,7 +80,8 @@ type SupportArchive struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   SupportArchiveSpec   `json:"spec,omitempty"`
+	// +required
+	Spec   SupportArchiveSpec   `json:"spec"`
 	Status SupportArchiveStatus `json:"status,omitempty"`
 }
 
