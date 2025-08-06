@@ -27,9 +27,14 @@ func (client *supportArchiveClient) UpdateStatusWithRetry(ctx context.Context, c
 
 	var currentObj *v1.SupportArchive
 	err = retry.OnConflict(func() error {
-		currentObj, err := isFirstTry(ctx, client, cr, &firstTry)
-		if err != nil {
-			return err
+		if firstTry {
+			firstTry = false
+			currentObj = cr.DeepCopy()
+		} else {
+			currentObj, err = client.Get(ctx, cr.Name, metav1.GetOptions{})
+			if err != nil {
+				return err
+			}
 		}
 
 		currentObj.Status = modifyStatusFn(currentObj.Status)
@@ -41,20 +46,6 @@ func (client *supportArchiveClient) UpdateStatusWithRetry(ctx context.Context, c
 	}
 
 	return currentObj, nil
-}
-
-func isFirstTry(ctx context.Context, client SupportArchiveInterface, cr *v1.SupportArchive, firstTry *bool) (*v1.SupportArchive, error) {
-	if *firstTry {
-		*firstTry = false
-		currentArchive := cr.DeepCopy()
-		return currentArchive, nil
-	} else {
-		currentArchive, err := client.Get(ctx, cr.Name, metav1.GetOptions{})
-		if err != nil {
-			return currentArchive, err
-		}
-		return currentArchive, nil
-	}
 }
 
 // AddFinalizer adds the given finalizer to the supportArchive.
