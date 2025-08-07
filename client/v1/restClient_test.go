@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"k8s.io/apimachinery/pkg/api/meta"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -315,168 +317,6 @@ func Test_supportArchiveClient_Watch(t *testing.T) {
 	})
 }
 
-func Test_supportArchiveClient_UpdateStatusCreating(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseCreating, false, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusCreating(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-
-	t.Run("success with retry", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseCreating, true, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusCreating(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-
-	t.Run("fail on get supportArchive", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseCreating, false, true)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusCreating(testCtx, supportArchive)
-
-		// then
-		require.Error(t, err)
-		require.ErrorContains(t, err, "an error on the server (\"\") has prevented the request from succeeding (get supportArchives.k8s.cloudogu.com mySupportArchive)")
-	})
-}
-
-func Test_supportArchiveClient_UpdateStatusCreated(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseCreated, false, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusCreated(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-	t.Run("success with retry", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseCreated, true, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusCreated(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-	t.Run("fail on get supportArchive", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseCreated, false, true)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusCreated(testCtx, supportArchive)
-
-		// then
-		require.Error(t, err)
-		require.ErrorContains(t, err, "an error on the server (\"\") has prevented the request from succeeding (get supportArchives.k8s.cloudogu.com mySupportArchive)")
-	})
-}
-
-func Test_supportArchiveClient_UpdateStatusFailed(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseFailed, false, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusFailed(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-	t.Run("success with retry", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseFailed, true, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusFailed(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-	t.Run("fail on get supportArchive", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseFailed, false, true)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusFailed(testCtx, supportArchive)
-
-		// then
-		require.Error(t, err)
-		require.ErrorContains(t, err, "an error on the server (\"\") has prevented the request from succeeding (get supportArchives.k8s.cloudogu.com mySupportArchive)")
-	})
-}
-
-func Test_supportArchiveClient_UpdateStatusDeleting(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseDeleting, false, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusDeleting(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-	t.Run("success with retry", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseDeleting, true, false)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusDeleting(testCtx, supportArchive)
-
-		// then
-		require.NoError(t, err)
-	})
-	t.Run("fail on get supportArchive", func(t *testing.T) {
-		// given
-		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
-		mockClient := mockClientForStatusUpdates(t, supportArchive, v1.StatusPhaseDeleting, false, true)
-		sClient := mockClient.SupportArchives("test")
-
-		// when
-		_, err := sClient.UpdateStatusDeleting(testCtx, supportArchive)
-
-		// then
-		require.Error(t, err)
-		require.ErrorContains(t, err, "an error on the server (\"\") has prevented the request from succeeding (get supportArchives.k8s.cloudogu.com mySupportArchive)")
-	})
-}
-
 func Test_supportArchiveClient_AddFinalizer(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		// given
@@ -633,82 +473,149 @@ func Test_supportArchiveClient_RemoveFinalizer(t *testing.T) {
 	})
 }
 
-func mockClientForStatusUpdates(t *testing.T, expectedSupportArchive *v1.SupportArchive, expectedStatus v1.StatusPhase, withRetry bool, failOnGetSupportArchive bool) SupportArchiveV1Interface {
-
-	failGetSupportArchive := func(writer http.ResponseWriter, request *http.Request) {
-		assert.Equal(t, http.MethodGet, request.Method)
-		assert.Equal(t, fmt.Sprintf("/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/%s", expectedSupportArchive.Name), request.URL.Path)
-
-		writer.WriteHeader(500)
-	}
-
-	assertGetSupportArchiveRequest := func(writer http.ResponseWriter, request *http.Request) {
-		assert.Equal(t, http.MethodGet, request.Method)
-		assert.Equal(t, fmt.Sprintf("/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/%s", expectedSupportArchive.Name), request.URL.Path)
-
-		supportArchiveJson, err := json.Marshal(expectedSupportArchive)
-		require.NoError(t, err)
-
-		writer.Header().Add("content-type", "application/json")
-		_, err = writer.Write(supportArchiveJson)
-		require.NoError(t, err)
-	}
-
-	assertUpdateStatusRequest := func(writer http.ResponseWriter, request *http.Request) {
-		assert.Equal(t, http.MethodPut, request.Method)
-		assert.Equal(t, fmt.Sprintf("/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/%s/status", expectedSupportArchive.Name), request.URL.Path)
-
-		bytes, err := io.ReadAll(request.Body)
-		require.NoError(t, err)
-
-		createdSupportArchive := &v1.SupportArchive{}
-		require.NoError(t, json.Unmarshal(bytes, createdSupportArchive))
-		assert.Equal(t, expectedSupportArchive.Name, createdSupportArchive.Name)
-		assert.Equal(t, expectedStatus, createdSupportArchive.Status.Phase)
-
-		writer.Header().Add("content-type", "application/json")
-		_, err = writer.Write(bytes)
-		require.NoError(t, err)
-	}
-
-	conflictUpdateStatusRequest := func(writer http.ResponseWriter, request *http.Request) {
-		assert.Equal(t, http.MethodPut, request.Method)
-		assert.Equal(t, fmt.Sprintf("/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/%s/status", expectedSupportArchive.Name), request.URL.Path)
-
-		writer.WriteHeader(409)
-	}
-
-	var requestAssertions []func(writer http.ResponseWriter, request *http.Request)
-
-	if failOnGetSupportArchive {
-		requestAssertions = []func(writer http.ResponseWriter, request *http.Request){
-			failGetSupportArchive,
+func Test_supportArchiveClient_UpdateStatusWithRetry(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		// given
+		downloadURL := "url"
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		modifyFunc := func(status v1.SupportArchiveStatus) v1.SupportArchiveStatus {
+			meta.SetStatusCondition(&status.Conditions, metav1.Condition{
+				Type:               v1.ConditionSupportArchiveCreated,
+				Status:             metav1.ConditionTrue,
+				LastTransitionTime: metav1.Time{Time: time.Now()},
+				Reason:             "AllCollectorsExecuted",
+				Message:            fmt.Sprintf("It is available for download under following url: %s", downloadURL),
+			})
+			status.DownloadPath = downloadURL
+			return status
 		}
-	} else if withRetry {
-		requestAssertions = []func(writer http.ResponseWriter, request *http.Request){
-			assertGetSupportArchiveRequest,
-			conflictUpdateStatusRequest,
-			assertGetSupportArchiveRequest,
-			assertUpdateStatusRequest,
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			assert.Equal(t, "PUT", request.Method)
+			assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive/status", request.URL.Path)
+
+			result, err := json.Marshal(v1.SupportArchiveStatus{})
+			require.NoError(t, err)
+
+			writer.Header().Add("content-type", "application/json")
+			_, err = writer.Write(result)
+			require.NoError(t, err)
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
 		}
-	} else {
-		requestAssertions = []func(writer http.ResponseWriter, request *http.Request){
-			assertGetSupportArchiveRequest,
-			assertUpdateStatusRequest,
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = sClient.UpdateStatusWithRetry(testCtx, supportArchive, modifyFunc, metav1.UpdateOptions{})
+
+		// then
+		require.NoError(t, err)
+	})
+
+	t.Run("should fail on getting support archive", func(t *testing.T) {
+		// given
+		putRequestCounter := 0
+		downloadURL := "url"
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		modifyFunc := func(status v1.SupportArchiveStatus) v1.SupportArchiveStatus {
+			meta.SetStatusCondition(&status.Conditions, metav1.Condition{
+				Type:               v1.ConditionSupportArchiveCreated,
+				Status:             metav1.ConditionTrue,
+				LastTransitionTime: metav1.Time{Time: time.Now()},
+				Reason:             "AllCollectorsExecuted",
+				Message:            fmt.Sprintf("It is available for download under following url: %s", downloadURL),
+			})
+			status.DownloadPath = downloadURL
+			return status
 		}
-	}
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			if request.URL.Path == "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive/status" {
+				assert.Equal(t, "PUT", request.Method)
+				assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive/status", request.URL.Path)
 
-	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		assertRequestFunc := requestAssertions[0]
-		requestAssertions = requestAssertions[1:]
+				result, err := json.Marshal(v1.SupportArchiveStatus{})
+				require.NoError(t, err)
 
-		assertRequestFunc(writer, request)
-	}))
+				if putRequestCounter == 0 {
+					writer.WriteHeader(409)
+				}
+				writer.Header().Add("content-type", "application/json")
+				_, err = writer.Write(result)
+				require.NoError(t, err)
+				putRequestCounter += 1
+			}
+			if request.URL.Path == "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive" {
+				assert.Equal(t, "GET", request.Method)
+				assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive", request.URL.Path)
 
-	config := rest.Config{
-		Host: server.URL,
-	}
-	client, err := NewForConfig(&config)
-	require.NoError(t, err)
-	return client
+				result, err := json.Marshal(v1.SupportArchive{})
+				require.NoError(t, err)
+
+				writer.WriteHeader(500)
+				writer.Header().Add("content-type", "application/json")
+				_, err = writer.Write(result)
+				require.NoError(t, err)
+			}
+
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = sClient.UpdateStatusWithRetry(testCtx, supportArchive, modifyFunc, metav1.UpdateOptions{})
+
+		// then
+		assert.ErrorContains(t, err, "an error on the server (\"{\\\"metadata\\\":{\\\"creationTimestamp\\\":null},\\\"spec\\\":{\\\"excludedContents\\\":{\\\"systemState\\\":false,\\\"sensitiveData\\\":false,\\\"events\\\":false,\\\"logs\\\":false,\\\"volumeInfo\\\":false,\\\"systemInfo\\\":false},\\\"contentTimeframe\\\":{\\\"startTime\\\":null,\\\"endTime\\\":null}},\\\"status\\\":{}}\") has prevented the request from succeeding")
+	})
+
+	t.Run("should fail to update conditions", func(t *testing.T) {
+		// given
+		downloadURL := "url"
+		supportArchive := &v1.SupportArchive{ObjectMeta: metav1.ObjectMeta{Name: "mySupportArchive", Namespace: "test"}}
+		modifyFunc := func(status v1.SupportArchiveStatus) v1.SupportArchiveStatus {
+			meta.SetStatusCondition(&status.Conditions, metav1.Condition{
+				Type:               v1.ConditionSupportArchiveCreated,
+				Status:             metav1.ConditionTrue,
+				LastTransitionTime: metav1.Time{Time: time.Now()},
+				Reason:             "AllCollectorsExecuted",
+				Message:            fmt.Sprintf("It is available for download under following url: %s", downloadURL),
+			})
+			status.DownloadPath = downloadURL
+			return status
+		}
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			assert.Equal(t, "PUT", request.Method)
+			assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/supportarchives/mySupportArchive/status", request.URL.Path)
+
+			result, err := json.Marshal(v1.SupportArchiveStatus{})
+			require.NoError(t, err)
+
+			writer.WriteHeader(500)
+			writer.Header().Add("content-type", "application/json")
+			_, err = writer.Write(result)
+			require.NoError(t, err)
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		sClient := client.SupportArchives("test")
+
+		// when
+		_, err = sClient.UpdateStatusWithRetry(testCtx, supportArchive, modifyFunc, metav1.UpdateOptions{})
+
+		// then
+		require.Error(t, err)
+		assert.ErrorContains(t, err, "an error on the server (\"{}\") has prevented the request from succeeding")
+	})
 }

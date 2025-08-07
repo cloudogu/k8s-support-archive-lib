@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0] - 2025-08-07
+### Added
+- [#3] Add status conditions to CRD
+- [#5] Additional tests to improve code coverage
+
 ## [v0.1.2] - 2025-03-31
 ### Changed
 - Renamed `downloadUrl` to `downloadPath` for consistency.
