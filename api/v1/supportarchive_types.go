@@ -9,6 +9,7 @@ type StatusPhase string
 const (
 	ConditionSupportArchiveCreated = "Created"
 	ConditionVolumeInfoFetched     = "VolumeInfoFetched"
+	ConditionSecretsFetched        = "SecretsFetched"
 )
 
 // SupportArchiveSpec defines the desired state of SupportArchive.
