@@ -10,6 +10,7 @@ const (
 	ConditionSupportArchiveCreated = "Created"
 	ConditionVolumeInfoFetched     = "VolumeInfoFetched"
 	ConditionNodeInfoFetched       = "NodeInfoFetched"
+	ConditionSecretsFetched        = "SecretsFetched"
 )
 
 // SupportArchiveSpec defines the desired state of SupportArchive.
