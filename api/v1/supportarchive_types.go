@@ -13,6 +13,7 @@ const (
 	ConditionSecretsFetched        = "SecretsFetched"
 	ConditionEventsFetched         = "EventsFetched"
 	ConditionLogsFetched           = "LogsFetched"
+	ConditionSystemStateFetched    = "SystemStateFetched"
 )
 
 // SupportArchiveSpec defines the desired state of SupportArchive.
