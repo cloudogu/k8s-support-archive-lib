@@ -573,7 +573,7 @@ func Test_supportArchiveClient_UpdateStatusWithRetry(t *testing.T) {
 		_, err = sClient.UpdateStatusWithRetry(testCtx, supportArchive, modifyFunc, metav1.UpdateOptions{})
 
 		// then
-		assert.ErrorContains(t, err, "an error on the server (\"{\\\"metadata\\\":{\\\"creationTimestamp\\\":null},\\\"spec\\\":{\\\"excludedContents\\\":{\\\"systemState\\\":false,\\\"sensitiveData\\\":false,\\\"events\\\":false,\\\"logs\\\":false,\\\"volumeInfo\\\":false,\\\"systemInfo\\\":false},\\\"contentTimeframe\\\":{\\\"startTime\\\":null,\\\"endTime\\\":null}},\\\"status\\\":{}}\") has prevented the request from succeeding")
+		assert.ErrorContains(t, err, "an error on the server (\"{\\\"metadata\\\":{},\\\"spec\\\":{\\\"excludedContents\\\":{\\\"systemState\\\":false,\\\"sensitiveData\\\":false,\\\"events\\\":false,\\\"logs\\\":false,\\\"volumeInfo\\\":false,\\\"systemInfo\\\":false},\\\"contentTimeframe\\\":{\\\"startTime\\\":null,\\\"endTime\\\":null}},\\\"status\\\":{}}\") has prevented the request from succeeding")
 	})
 
 	t.Run("should fail to update conditions", func(t *testing.T) {

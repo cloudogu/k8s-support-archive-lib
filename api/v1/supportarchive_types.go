@@ -11,6 +11,8 @@ const (
 	ConditionVolumeInfoFetched     = "VolumeInfoFetched"
 	ConditionNodeInfoFetched       = "NodeInfoFetched"
 	ConditionSecretsFetched        = "SecretsFetched"
+	ConditionEventsFetched         = "EventsFetched"
+	ConditionLogsFetched           = "LogsFetched"
 	ConditionSystemStateFetched    = "SystemStateFetched"
 )
 
