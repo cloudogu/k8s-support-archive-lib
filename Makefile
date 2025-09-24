@@ -1,11 +1,13 @@
 PROJECT_NAME=k8s-support-archive-lib
 ARTIFACT_ID=k8s-support-archive-operator-crd
 APPEND_CRD_SUFFIX=false
-VERSION=0.2.0
+VERSION=1.0.0
 ## Image URL to use all building/pushing image targets
 IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
-GOTAG?=1.24.1
-MAKEFILES_VERSION=10.1.1
+GOTAG?=1.25.1
+MAKEFILES_VERSION=10.2.1
+LINT_VERSION=v2.5.0
+CONTROLLER_GEN_VERSION=v0.19.0
 
 ADDITIONAL_CLEAN=dist-clean
 
@@ -23,6 +25,7 @@ include build/make/clean.mk
 include build/make/digital-signature.mk
 include build/make/mocks.mk
 include build/make/k8s-controller.mk
+include build/make/release.mk
 
 ##@ Debug
 
